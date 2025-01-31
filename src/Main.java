@@ -17,7 +17,7 @@ public class Main {
         gridForUser(fields);
         placeShips(random, field);
         displayField(field);
-        shots(field, fields, sc);
+        shots(field, fields, sc, userName);
         displayField(fields);
     }
     public static void grid(String[][] field) {
@@ -82,7 +82,6 @@ public class Main {
             out.println();
         }
     }
-
     public static String[][] placeShips(Random random, String[][] field) {
 
         boolean placed = false;
@@ -190,222 +189,209 @@ public class Main {
     public static int directions (Random random){
         return random.nextInt(2);
     }
-    public static void shots (String[][] field, String[][] fields, Scanner sc) {
+    public static void shots (String[][] field, String[][] fields, Scanner sc, String name) {
         // hit +
         // mis -
         // sunk @
+        ArrayList<String> shotBefore = new ArrayList<>();
         boolean allShipsSunks = false;
         int count = 0;
+        int countShots = 0;
         while (!allShipsSunks) {
             int numrow = 0;
             int numcol = 0;
             out.println("Input coordinates of ships. Choose from A-G and 1-7. Ex: A5 ");
             String usersInput = sc.nextLine().trim();
-            clearConsole();
-            out.println("You have chosed " + usersInput );
-            if (usersInput.matches("[A-G][1-7]")) {
-                char letter = usersInput.charAt(0);
-                int row = change(letter, numrow);
-                char number = usersInput.charAt(1);
-                int column = change(number, numcol);
-                switch (field[row][column]){
-                    case "$":
-                        out.println("ship sank");
-                        fields[row][column] = "@";
-                        //field[row][column] = ":";
-                        count++;
-                        break;
-                    case "~":
-                        out.println("You missed");
-                        fields[row][column] = "-";
-                        //field[row][column] = ":";
-                        break;
-                    case "*":
-                        if(field[row+1][column].equals("*") || field[row - 1][column].equals("*") || field[row][column - 1].equals("*") ||
-                                field[row][column + 1].equals("*")){
-                            out.println("You hit");
-                            fields[row][column] = "+";
-                            field[row][column] = "+";
-                        }
-                        else if (field[row + 1][column].equals("+")) {
-                            field[row][column] = "@";
-                            fields[row][column] = "@";
-                            fields[row + 1][column] = "@";
-                            field[row + 1][column] = "@";
+            countShots++;
+            if(shotBefore.contains(usersInput)){
+                out.println("You have already shot here!");
+            }
+            else {
+                shotBefore.add(usersInput);
+                clearConsole();
+                out.println("You have chosed " + usersInput);
+                if (usersInput.matches("[A-G][1-7]")) {
+                    char letter = usersInput.charAt(0);
+                    int row = change(letter, numrow);
+                    char number = usersInput.charAt(1);
+                    int column = change(number, numcol);
+                    switch (field[row][column]) {
+                        case "$":
                             out.println("ship sank");
-                            count++;
-                        }
-                        else if (field[row - 1][column].equals("+")) {
-                            field[row][column] = "@";
                             fields[row][column] = "@";
-                            fields[row - 1][column] = "@";
-                            field[row - 1][column] = "@";
-                            out.println("ship sank");
+                            //field[row][column] = ":";
                             count++;
-                        }
-                        else if (field[row][column + 1].equals("+")) {
-                            field[row][column] = "@";
-                            field[row][column + 1] = "@";
-                            fields[row][column] = "@";
-                            fields[row][column + 1] = "@";
-                            out.println("ship sank");
-                            count++;
-                        }
-                        else if (field[row][column - 1].equals("+")) {
-                            field[row][column] = "@";
-                            field[row][column - 1] = "@";
-                            fields[row][column] = "@";
-                            fields[row][column - 1] = "@";
-                            out.println("ship sank");
-                            count++;
-                        }
-                    case "#":
-                        if((field[row + 1][column].equals("#") && field[row - 1][column].equals("#")) || (field[row + 1][column].equals("#") && field[row - 1][column].equals("+")) || (field[row + 1][column].equals("+") && field[row - 1][column].equals("#"))){
-                            fields[row][column] = "+";
-                            field[row][column] = "+";
-                            out.println("You hit");
-                        }
-                        else if(field[row + 1][column].equals("+") && field[row - 1][column].equals("+")){
-                            fields[row][column] = "@";
-                            fields[row + 1][column] = "@";
-                            fields[row - 1][column] = "@";
-                            field[row][column] = "@";
-                            field[row + 1][column] = "@";
-                            field[row - 1][column] = "@";
-                            out.println("Ship sank");
-                            count++;
-                        }
-                        else if((field[row][column + 1].equals("#") && field[row][column - 1].equals("#")) || (field[row][column + 1].equals("+") && field[row][column - 1].equals("#")) || (field[row][column + 1].equals("#") && field[row][column - 1].equals("+"))){
-                            fields[row][column] = "+";
-                            field[row][column] = "+";
-                            out.println("You hit");
-                        }
-                        else if(field[row][column + 1].equals("+") && field[row][column - 1].equals("+")){
-                            fields[row][column] = "@";
-                            fields[row][column + 1] = "@";
-                            fields[row][column - 1] = "@";
-                            field[row][column] = "@";
-                            field[row][column + 1] = "@";
-                            field[row][column - 1] = "@";
-                            out.println("Ship sank");
-                            count++;
-                        }
-
-                        else if(field[row + 1][column].equals("#")) {
-                            if((field[row + 2][column].equals("#")) || (field[row + 2][column].equals("+"))){
+                            break;
+                        case "~":
+                            out.println("You missed");
+                            fields[row][column] = "-";
+                            //field[row][column] = ":";
+                            break;
+                        case "*":
+                            if (field[row + 1][column].equals("*") || field[row - 1][column].equals("*") || field[row][column - 1].equals("*") ||
+                                    field[row][column + 1].equals("*")) {
+                                out.println("You hit");
                                 fields[row][column] = "+";
                                 field[row][column] = "+";
-                                out.println("You hit");
-                            }
-
-                        }
-                        else if(field[row + 1][column].equals("+")) {
-                            if((field[row + 2][column].equals("#"))){
-                                fields[row][column] = "+";
-                                field[row][column] = "+";
-                                out.println("You hit");
-                            }
-                            else if(field[row + 2][column].equals("+")){
+                            } else if (field[row + 1][column].equals("+")) {
+                                field[row][column] = "@";
                                 fields[row][column] = "@";
                                 fields[row + 1][column] = "@";
-                                fields[row + 2][column] = "@";
-                                field[row][column] = "@";
                                 field[row + 1][column] = "@";
-                                field[row + 2][column] = "@";
-                                out.println("Ship sank");
+                                out.println("ship sank");
                                 count++;
-                            }
-
-                        }
-                        else if(field[row - 1][column].equals("#")) {
-                            if((field[row -  2][column].equals("#")) || (field[row + 2][column].equals("+"))){
-                                fields[row][column] = "+";
-                                field[row][column] = "+";
-                                out.println("You hit");
-                            }
-                        }
-                        else if(field[row - 1][column].equals("+")) {
-                            if((field[row - 2][column].equals("#"))){
-                                fields[row][column] = "+";
-                                field[row][column] = "+";
-                                out.println("You hit");
-                            }
-                            else if(field[row - 2][column].equals("+")){
+                            } else if (field[row - 1][column].equals("+")) {
+                                field[row][column] = "@";
                                 fields[row][column] = "@";
                                 fields[row - 1][column] = "@";
-                                fields[row - 2][column] = "@";
-                                field[row][column] = "@";
                                 field[row - 1][column] = "@";
-                                field[row - 2][column] = "@";
-                                out.println("Ship sank");
+                                out.println("ship sank");
                                 count++;
-                            }
-                        }
-                        else if(field[row][column + 1].equals("#")) {
-                            if ((field[row][column + 2].equals("#")) || (field[row][column + 2].equals("+"))) {
-                                fields[row][column] = "+";
-                                field[row][column] = "+";
-                                out.println("You hit");
-                            }
-                        }
-                        else if(field[row][column + 1].equals("+")) {
-                            if ((field[row][column + 2].equals("#"))) {
-                                fields[row][column] = "+";
-                                field[row][column] = "+";
-                                out.println("You hit");
-                            }
-                            else if(field[row][column + 2].equals("+")) {
-                                fields[row][column] = "@";
-                                fields[row][column + 1] = "@";
-                                fields[row][column + 2] = "@";
+                            } else if (field[row][column + 1].equals("+")) {
                                 field[row][column] = "@";
                                 field[row][column + 1] = "@";
-                                field[row][column + 2] = "@";
-                                out.println("Ship sank");
-                                count++;
-                            }
-                        }
-                        else if(field[row][column - 1].equals("#")) {
-                            if ((field[row][column - 2].equals("#")) || (field[row][column - 2].equals("+"))) {
-                                fields[row][column] = "+";
-                                field[row][column] = "+";
-                                out.println("You hit");
-                            }
-                        }
-                        else if(field[row][column - 1].equals("+")) {
-                            if ((field[row][column - 2].equals("#"))) {
-                                fields[row][column] = "+";
-                                field[row][column] = "+";
-                                out.println("You hit");
-                            }
-                            else if(field[row][column - 2].equals("+")) {
                                 fields[row][column] = "@";
-                                fields[row][column - 1] = "@";
-                                fields[row][column - 2] = "@";
+                                fields[row][column + 1] = "@";
+                                out.println("ship sank");
+                                count++;
+                            } else if (field[row][column - 1].equals("+")) {
                                 field[row][column] = "@";
                                 field[row][column - 1] = "@";
-                                field[row][column - 2] = "@";
-                                out.println("Ship sank");
+                                fields[row][column] = "@";
+                                fields[row][column - 1] = "@";
+                                out.println("ship sank");
                                 count++;
                             }
-                        }
+                        case "#":
+                            if ((field[row + 1][column].equals("#") && field[row - 1][column].equals("#")) || (field[row + 1][column].equals("#") && field[row - 1][column].equals("+")) || (field[row + 1][column].equals("+") && field[row - 1][column].equals("#"))) {
+                                fields[row][column] = "+";
+                                field[row][column] = "+";
+                                out.println("You hit");
+                            } else if (field[row + 1][column].equals("+") && field[row - 1][column].equals("+")) {
+                                fields[row][column] = "@";
+                                fields[row + 1][column] = "@";
+                                fields[row - 1][column] = "@";
+                                field[row][column] = "@";
+                                field[row + 1][column] = "@";
+                                field[row - 1][column] = "@";
+                                out.println("Ship sank");
+                                count++;
+                            } else if ((field[row][column + 1].equals("#") && field[row][column - 1].equals("#")) || (field[row][column + 1].equals("+") && field[row][column - 1].equals("#")) || (field[row][column + 1].equals("#") && field[row][column - 1].equals("+"))) {
+                                fields[row][column] = "+";
+                                field[row][column] = "+";
+                                out.println("You hit");
+                            } else if (field[row][column + 1].equals("+") && field[row][column - 1].equals("+")) {
+                                fields[row][column] = "@";
+                                fields[row][column + 1] = "@";
+                                fields[row][column - 1] = "@";
+                                field[row][column] = "@";
+                                field[row][column + 1] = "@";
+                                field[row][column - 1] = "@";
+                                out.println("Ship sank");
+                                count++;
+                            } else if (field[row + 1][column].equals("#")) {
+                                if ((field[row + 2][column].equals("#")) || (field[row + 2][column].equals("+"))) {
+                                    fields[row][column] = "+";
+                                    field[row][column] = "+";
+                                    out.println("You hit");
+                                }
+
+                            } else if (field[row + 1][column].equals("+")) {
+                                if ((field[row + 2][column].equals("#"))) {
+                                    fields[row][column] = "+";
+                                    field[row][column] = "+";
+                                    out.println("You hit");
+                                } else if (field[row + 2][column].equals("+")) {
+                                    fields[row][column] = "@";
+                                    fields[row + 1][column] = "@";
+                                    fields[row + 2][column] = "@";
+                                    field[row][column] = "@";
+                                    field[row + 1][column] = "@";
+                                    field[row + 2][column] = "@";
+                                    out.println("Ship sank");
+                                    count++;
+                                }
+
+                            } else if (field[row - 1][column].equals("#")) {
+                                if ((field[row - 2][column].equals("#")) || (field[row + 2][column].equals("+"))) {
+                                    fields[row][column] = "+";
+                                    field[row][column] = "+";
+                                    out.println("You hit");
+                                }
+                            } else if (field[row - 1][column].equals("+")) {
+                                if ((field[row - 2][column].equals("#"))) {
+                                    fields[row][column] = "+";
+                                    field[row][column] = "+";
+                                    out.println("You hit");
+                                } else if (field[row - 2][column].equals("+")) {
+                                    fields[row][column] = "@";
+                                    fields[row - 1][column] = "@";
+                                    fields[row - 2][column] = "@";
+                                    field[row][column] = "@";
+                                    field[row - 1][column] = "@";
+                                    field[row - 2][column] = "@";
+                                    out.println("Ship sank");
+                                    count++;
+                                }
+                            } else if (field[row][column + 1].equals("#")) {
+                                if ((field[row][column + 2].equals("#")) || (field[row][column + 2].equals("+"))) {
+                                    fields[row][column] = "+";
+                                    field[row][column] = "+";
+                                    out.println("You hit");
+                                }
+                            } else if (field[row][column + 1].equals("+")) {
+                                if ((field[row][column + 2].equals("#"))) {
+                                    fields[row][column] = "+";
+                                    field[row][column] = "+";
+                                    out.println("You hit");
+                                } else if (field[row][column + 2].equals("+")) {
+                                    fields[row][column] = "@";
+                                    fields[row][column + 1] = "@";
+                                    fields[row][column + 2] = "@";
+                                    field[row][column] = "@";
+                                    field[row][column + 1] = "@";
+                                    field[row][column + 2] = "@";
+                                    out.println("Ship sank");
+                                    count++;
+                                }
+                            } else if (field[row][column - 1].equals("#")) {
+                                if ((field[row][column - 2].equals("#")) || (field[row][column - 2].equals("+"))) {
+                                    fields[row][column] = "+";
+                                    field[row][column] = "+";
+                                    out.println("You hit");
+                                }
+                            } else if (field[row][column - 1].equals("+")) {
+                                if ((field[row][column - 2].equals("#"))) {
+                                    fields[row][column] = "+";
+                                    field[row][column] = "+";
+                                    out.println("You hit");
+                                } else if (field[row][column - 2].equals("+")) {
+                                    fields[row][column] = "@";
+                                    fields[row][column - 1] = "@";
+                                    fields[row][column - 2] = "@";
+                                    field[row][column] = "@";
+                                    field[row][column - 1] = "@";
+                                    field[row][column - 2] = "@";
+                                    out.println("Ship sank");
+                                    count++;
+                                }
+                            }
 
 
+                    }
 
+
+                } else {
+                    System.out.println("Try again. One letter A-G and one number 1-7.");
                 }
-
-
-            } else {
-                System.out.println("Try again. One letter A-G and one number 1-7.");
             }
             displayField(fields);
             if(count == 7){
                 allShipsSunks = true;
             }
         }
+        out.println( name + " - " + countShots + "shots." );
     }
-
-
     public static int change (char name, int num) {
         if (name == 'A' || name == '1') {
             num = 1;
