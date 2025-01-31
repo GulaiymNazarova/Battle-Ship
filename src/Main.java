@@ -12,13 +12,13 @@ public class Main {
         String userName = sc.nextLine();
         // The field
         String[][] field = new String[9][9];
+        String[][] fields = new String[9][9];
         grid(field);
-        displayField(field);
+        gridForUser(fields);
         placeShips(random, field);
         displayField(field);
-
+        displayField(fields);
     }
-
     public static void grid(String[][] field) {
         field[0][0] = " ";
         field[0][1] = "A";
@@ -46,11 +46,37 @@ public class Main {
             field[8][k] = " ";
         }
     }
+    public static void gridForUser (String[][] fields) {
+        fields[0][0] = " ";
+        fields[1][0] = "A";
+        fields[2][0] = "B";
+        fields[3][0] = "C";
+        fields[4][0] = "D";
+        fields[5][0] = "E";
+        fields[6][0] = "F";
+        fields[7][0] = "G";
 
-    public static void displayField(String[][] field) {
+        for (int j = 1; j < 8; j++) {
+            fields[0][j] = String.valueOf(j);
+        }
+        for (int j = 1; j < 8; j++) {
+            for (int i = 1; i < 8; i++) {
+                fields[j][i] = "~";
+            }
+        }
+        for(int k = 0; k <= 8; k++)
+        {
+            fields[k][8] = " ";
+        }
+        for(int k = 0; k <= 7; k++)
+        {
+            fields[8][k] = " ";
+        }
+    }
+    public static void displayField(String[][] name) {
         for (int j = 0; j < 8; j++) {
             for (int i = 0; i < 8; i++) {
-                out.print(field[j][i] + " ");
+                out.print(name[j][i] + " ");
             }
             out.println();
         }
@@ -65,89 +91,87 @@ public class Main {
                 availableCells.add(row + "," + col);
             }
         }
-            while(!placed) {
-                int direction3 = directions(random);
-                if (direction3 == 0) {
-                    int firstCellRow3 = random.nextInt(7) + 1;
-                    int firstCellColumn3 = random.nextInt(5) + 1;
-                    for (int hor3 = firstCellColumn3; hor3 <= firstCellColumn3 + 2; hor3++) {
-                        field[firstCellRow3][hor3] = "#";
-                    }
-                    for (int i = firstCellRow3 - 1; i <= firstCellRow3 + 1; i++) {
-                        for (int j = firstCellColumn3 - 1; j <= firstCellColumn3 + 3; j++) {
-                            availableCells.remove(i + "," + j);
-                        }
-                    }
-                    placed = true;
-
-                } else if (direction3 == 1) {
-                    int firstCellRow3 = random.nextInt(5) + 1;
-                    int firstCellColumn3 = random.nextInt(7) + 1;
-                    for (int ver3 = firstCellRow3; ver3 <= firstCellRow3 + 2; ver3++) {
-                        field[ver3][firstCellColumn3] = "#";
-                    }
-                    for (int i = firstCellRow3 - 1; i <= firstCellRow3 + 3; i++) {
-                        for (int j = firstCellColumn3 - 1; j <= firstCellColumn3 + 1; j++) {
-                            availableCells.remove(i + "," + j);
-                        }
-                    }
-                    placed = true;
+        while (!placed) {
+            int direction3 = directions(random);
+            if (direction3 == 0) {
+                int firstCellRow3 = random.nextInt(7) + 1;
+                int firstCellColumn3 = random.nextInt(5) + 1;
+                for (int hor3 = firstCellColumn3; hor3 <= firstCellColumn3 + 2; hor3++) {
+                    field[firstCellRow3][hor3] = "#";
                 }
+                for (int i = firstCellRow3 - 1; i <= firstCellRow3 + 1; i++) {
+                    for (int j = firstCellColumn3 - 1; j <= firstCellColumn3 + 3; j++) {
+                        availableCells.remove(i + "," + j);
+                    }
+                }
+                placed = true;
+
+            } else if (direction3 == 1) {
+                int firstCellRow3 = random.nextInt(5) + 1;
+                int firstCellColumn3 = random.nextInt(7) + 1;
+                for (int ver3 = firstCellRow3; ver3 <= firstCellRow3 + 2; ver3++) {
+                    field[ver3][firstCellColumn3] = "#";
+                }
+                for (int i = firstCellRow3 - 1; i <= firstCellRow3 + 3; i++) {
+                    for (int j = firstCellColumn3 - 1; j <= firstCellColumn3 + 1; j++) {
+                        availableCells.remove(i + "," + j);
+                    }
+                }
+                placed = true;
             }
-        out.println(availableCells);
-        for(int l = 0; l < 2; l++) {
+        }
+        for (int l = 0; l < 2; l++) {
             boolean placed2 = false;
-                while (!placed2) {
-                    int direction2 = directions(random);
-                    String selectedCell = availableCells.get(random.nextInt(availableCells.size()));
-                    String[] parts = selectedCell.split(",");
-                    int firstCellRow2 = Integer.parseInt(parts[0]);
-                    int firstCellColumn2 = Integer.parseInt(parts[1]);
+            while (!placed2) {
+                int direction2 = directions(random);
+                String selectedCell = availableCells.get(random.nextInt(availableCells.size()));
+                String[] parts = selectedCell.split(",");
+                int firstCellRow2 = Integer.parseInt(parts[0]);
+                int firstCellColumn2 = Integer.parseInt(parts[1]);
 
-                    if (direction2 == 0) {
-                        if (firstCellColumn2 + 1 < 8 && firstCellColumn2 > 0 && firstCellRow2 > 0 && firstCellRow2 < 8 &&
-                                availableCells.contains((firstCellRow2) + "," + (firstCellColumn2 + 1))) {
-                            field[firstCellRow2][firstCellColumn2] = "#";
-                            field[firstCellRow2][firstCellColumn2 + 1] = "#";
+                if (direction2 == 0) {
+                    if (firstCellColumn2 + 1 < 8 && firstCellColumn2 > 0 && firstCellRow2 > 0 && firstCellRow2 < 8 &&
+                            availableCells.contains((firstCellRow2) + "," + (firstCellColumn2 + 1))) {
+                        field[firstCellRow2][firstCellColumn2] = "*";
+                        field[firstCellRow2][firstCellColumn2 + 1] = "*";
 
-                            for (int i = firstCellRow2 - 1; i <= firstCellRow2 + 1; i++) {
-                                for (int j = firstCellColumn2 - 1; j <= firstCellColumn2 + 2; j++) {
-                                    availableCells.remove(i + "," + j);
-                                }
+                        for (int i = firstCellRow2 - 1; i <= firstCellRow2 + 1; i++) {
+                            for (int j = firstCellColumn2 - 1; j <= firstCellColumn2 + 2; j++) {
+                                availableCells.remove(i + "," + j);
                             }
-                            out.println("dsvdsv");
+
                             placed2 = true;
                         }
                     }
+                }
                     else if (direction2 == 1) {
-                        if (firstCellRow2 + 1 < 9 && firstCellRow2 > 0 && firstCellColumn2 > 0 && firstCellColumn2 < 8 &&
+                        if (firstCellRow2 + 1 < 8 && firstCellRow2 > 0 && firstCellColumn2 > 0 && firstCellColumn2 < 8 &&
                                 availableCells.contains((firstCellRow2 + 1) + "," + firstCellColumn2)) {
 
-                            field[firstCellRow2][firstCellColumn2] = "#";
-                            field[firstCellRow2 + 1][firstCellColumn2] = "#";
+                            field[firstCellRow2][firstCellColumn2] = "*";
+                            field[firstCellRow2 + 1][firstCellColumn2] = "*";
 
                             for (int i = firstCellRow2 - 1; i <= firstCellRow2 + 2; i++) {
                                 for (int j = firstCellColumn2 - 1; j <= firstCellColumn2 + 1; j++) {
                                     availableCells.remove(i + "," + j);
                                 }
                             }
-                            out.println("osnon");
                             placed2 = true;
                         }
                     }
                 }
             }
-        out.println(availableCells);
-        for(int l = 0; l < 4; l++) {
-            boolean placed3 = false;
-            while (!placed3) {
-                String selectedCell = availableCells.get(random.nextInt(availableCells.size()));
-                String[] parts = selectedCell.split(",");
-                int firstCellRow2 = Integer.parseInt(parts[0]);
-                int firstCellColumn2 = Integer.parseInt(parts[1]);
 
-                    if (firstCellColumn2 < 9 && firstCellColumn2 > 0 && firstCellRow2 > 0 && firstCellRow2 < 8 ) {
-                        field[firstCellRow2][firstCellColumn2] = "#";
+            for (int o = 0; o < 4; o++) {
+                boolean placed3 = false;
+                while (!placed3) {
+                    String selectedCell = availableCells.get(random.nextInt(availableCells.size()));
+                    String[] parts = selectedCell.split(",");
+                    int firstCellRow2 = Integer.parseInt(parts[0]);
+                    int firstCellColumn2 = Integer.parseInt(parts[1]);
+
+                    if (firstCellColumn2 < 8 && firstCellColumn2 > 0 && firstCellRow2 > 0 && firstCellRow2 < 8) {
+                        field[firstCellRow2][firstCellColumn2] = "$";
 
                         for (int i = firstCellRow2 - 1; i <= firstCellRow2 + 1; i++) {
                             for (int j = firstCellColumn2 - 1; j <= firstCellColumn2 + 1; j++) {
@@ -156,13 +180,15 @@ public class Main {
                         }
                         placed3 = true;
                     }
+                }
             }
-        }
-        out.println(availableCells);
-        return field;
-    }
 
-    public static int directions(Random random) {
+            return field;
+
+    }
+    public static int directions (Random random){
         return random.nextInt(2);
     }
+
+
 }
